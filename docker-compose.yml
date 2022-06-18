@@ -1,0 +1,15 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres:13
+    restart: unless-stopped
+    networks:
+      - default
+    environment:
+      POSTGRES_PASSWORD: 896699
+      POSTGRES_USER: postgres
+    volumes:
+      - ./db/db-data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
