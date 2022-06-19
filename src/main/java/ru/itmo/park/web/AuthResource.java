@@ -4,10 +4,7 @@ package ru.itmo.park.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.itmo.park.model.dto.TokenDTO;
 import ru.itmo.park.model.dto.UserLoginDTO;
 import ru.itmo.park.service.UserService;
@@ -15,6 +12,7 @@ import ru.itmo.park.service.UserService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthResource {
 
 

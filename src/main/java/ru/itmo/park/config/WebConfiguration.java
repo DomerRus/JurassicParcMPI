@@ -9,11 +9,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry.addMapping("**")
                 .allowedOrigins("*")
-                .allowedMethods("*")
-                .allowedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition")
-                .exposedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition");
-        //registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("Authorization,");
+                .allowedMethods("*");
+//                .allowedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition");
+//                .exposedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition");
+//        registry.addMapping("api/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("Authorization,");
     }
 }
