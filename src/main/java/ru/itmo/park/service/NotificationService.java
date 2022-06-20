@@ -5,6 +5,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.mapping.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,9 +14,11 @@ import ru.itmo.park.model.dto.FirebaseDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
 import ru.itmo.park.model.entity.FirebaseModel;
 import ru.itmo.park.model.entity.NotificationModel;
+import ru.itmo.park.model.entity.SettingsModel;
 import ru.itmo.park.model.entity.UserModel;
 import ru.itmo.park.repository.FirebaseRepository;
 import ru.itmo.park.repository.NotificationRepository;
+import ru.itmo.park.repository.SettingsRepository;
 import ru.itmo.park.security.jwt.JwtProvider;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +40,8 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
+    private final SettingsRepository settingsRepository;
+
     public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO){
         Integer userId = jwtProvider.getCurrentUser(token);
         UserModel userModel = userService.findById(userId).orElse(new UserModel());
@@ -53,10 +58,14 @@ public class NotificationService {
                 .header(notificationDTO.getHeader())
                 .body(notificationDTO.getBody())
                 .user(userModel)
-                .isAlert(notificationDTO.getIsAlert())
+                .isAlert(saveAlert(notificationDTO.getIsAlert()))
                 .isSend(Boolean.FALSE)
                 .build();
         return Optional.of(notificationRepository.save(notif));
+    }
+
+    public Optional<SettingsModel> getAlert(){
+        return Optional.ofNullable(settingsRepository.findFirstByName("alert"));
     }
 
     @Scheduled(fixedRate = 5000)
@@ -91,6 +100,23 @@ public class NotificationService {
                     .sendAllAsync(messages);
         }catch (Exception ex) {
             log.error(ex.getMessage());
+        }
+    }
+
+
+    private Boolean saveAlert(Boolean alert){
+        SettingsModel setting = settingsRepository.findFirstByName("alert");
+        if(setting!=null){
+            setting.setValue(alert.toString());
+            settingsRepository.save(setting);
+            return Boolean.parseBoolean(setting.getValue());
+        } else {
+            SettingsModel newSetting = SettingsModel.builder()
+                    .name("alert")
+                    .value(alert.toString())
+                    .build();
+            settingsRepository.save(newSetting);
+            return Boolean.parseBoolean(newSetting.getValue());
         }
     }
 }

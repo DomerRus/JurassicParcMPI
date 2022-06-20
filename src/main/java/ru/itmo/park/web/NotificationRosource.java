@@ -7,6 +7,7 @@ import ru.itmo.park.model.dto.FirebaseDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
 import ru.itmo.park.model.entity.FirebaseModel;
 import ru.itmo.park.model.entity.NotificationModel;
+import ru.itmo.park.model.entity.SettingsModel;
 import ru.itmo.park.service.NotificationService;
 
 @RequiredArgsConstructor
@@ -33,5 +34,12 @@ public class NotificationRosource {
         return notificationService.saveFirebaseToken(token, firebaseDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping("/alert")
+    public ResponseEntity<SettingsModel> getAlert(){
+        return notificationService.getAlert()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 }
