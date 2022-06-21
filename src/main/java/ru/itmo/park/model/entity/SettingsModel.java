@@ -19,5 +19,6 @@ public class SettingsModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
     String name;
-    String value;
+    String type;
+    Boolean value;
 }

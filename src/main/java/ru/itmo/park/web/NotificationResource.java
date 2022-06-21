@@ -13,7 +13,8 @@ import ru.itmo.park.service.NotificationService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/notification")
-public class NotificationRosource {
+@CrossOrigin(origins = "*")
+public class NotificationResource {
 
     private final NotificationService notificationService;
 
@@ -34,12 +35,5 @@ public class NotificationRosource {
         return notificationService.saveFirebaseToken(token, firebaseDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
-    }
-
-    @GetMapping("/alert")
-    public ResponseEntity<SettingsModel> getAlert(){
-        return notificationService.getAlert()
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
     }
 }

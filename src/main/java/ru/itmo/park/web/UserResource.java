@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/user")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", methods = {RequestMethod.OPTIONS, RequestMethod.GET}, exposedHeaders = {"Authorization"}, allowedHeaders = {"Authorization"})
+@CrossOrigin(origins = "*")
 public class UserResource {
 
     private final UserService userService;

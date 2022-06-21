@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface FirebaseRepository extends JpaRepository<FirebaseModel, Integer> {
     List<FirebaseModel> findAllByUser_Id(Integer userId);
+
+    FirebaseModel findFirstByToken(String token);
 }

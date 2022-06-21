@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import ru.itmo.park.model.dto.AlertDTO;
 import ru.itmo.park.model.dto.FirebaseDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
 import ru.itmo.park.model.entity.FirebaseModel;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,6 +47,10 @@ public class NotificationService {
     public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO){
         Integer userId = jwtProvider.getCurrentUser(token);
         UserModel userModel = userService.findById(userId).orElse(new UserModel());
+        FirebaseModel firebase = firebaseRepository.findFirstByToken(firebaseDTO.getToken());
+        if(firebase != null){
+            return Optional.of(firebase);
+        }
         FirebaseModel firebaseModel = FirebaseModel.builder()
                 .token(firebaseDTO.getToken())
                 .user(userModel)
@@ -66,6 +72,13 @@ public class NotificationService {
 
     public Optional<SettingsModel> getAlert(){
         return Optional.ofNullable(settingsRepository.findFirstByName("alert"));
+    }
+
+    public Optional<SettingsModel> setAlert(AlertDTO alertDTO){
+        SettingsModel settingsModel = settingsRepository.findFirstByName("alert");
+        settingsModel.setType(alertDTO.getType());
+        settingsModel.setValue(alertDTO.getValue());
+        return Optional.of(settingsRepository.save(settingsModel));
     }
 
     @Scheduled(fixedRate = 5000)
@@ -93,7 +106,7 @@ public class NotificationService {
             item.setIsSend(Boolean.TRUE);
             notificationRepository.save(item);
         });
-        log.info("Send notification...");
+        //log.info("Send notification...");
         try{
             if (messages.size()==0) return;
             FirebaseMessaging.getInstance()
@@ -107,16 +120,16 @@ public class NotificationService {
     private Boolean saveAlert(Boolean alert){
         SettingsModel setting = settingsRepository.findFirstByName("alert");
         if(setting!=null){
-            setting.setValue(alert.toString());
+            setting.setValue(alert);
             settingsRepository.save(setting);
-            return Boolean.parseBoolean(setting.getValue());
+            return setting.getValue();
         } else {
             SettingsModel newSetting = SettingsModel.builder()
                     .name("alert")
-                    .value(alert.toString())
+                    .value(alert)
                     .build();
             settingsRepository.save(newSetting);
-            return Boolean.parseBoolean(newSetting.getValue());
+            return newSetting.getValue();
         }
     }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface TaskRepository  extends JpaRepository<TaskModel, Integer> {
     Optional<List<TaskModel>> findAllByTo_Id(Integer id);
 
-    Optional<TaskModel> findFirstByFrom_IdAndStatus_IdIsNot(Integer id, Integer statusId);
+    Optional<TaskModel> findFirstByFrom_IdOrTo_IdAndStatus_IdIsLessThan(Integer from, Integer to, Integer statusId);
 }

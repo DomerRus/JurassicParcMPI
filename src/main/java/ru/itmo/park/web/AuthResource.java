@@ -12,7 +12,7 @@ import ru.itmo.park.service.UserService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class AuthResource {
 
 
