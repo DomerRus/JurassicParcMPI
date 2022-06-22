@@ -44,6 +44,11 @@ public class NotificationService {
 
     private final SettingsRepository settingsRepository;
 
+
+    public Optional<List<NotificationModel>> getAllNotif(String token){
+        return Optional.ofNullable(notificationRepository.findAllByUser_Id(jwtProvider.getCurrentUser(token)));
+    }
+
     public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO){
         Integer userId = jwtProvider.getCurrentUser(token);
         UserModel userModel = userService.findById(userId).orElse(new UserModel());
@@ -64,7 +69,7 @@ public class NotificationService {
                 .header(notificationDTO.getHeader())
                 .body(notificationDTO.getBody())
                 .user(userModel)
-                .isAlert(saveAlert(notificationDTO.getIsAlert()))
+                .isAlert(notificationDTO.getIsAlert())
                 .isSend(Boolean.FALSE)
                 .build();
         return Optional.of(notificationRepository.save(notif));
@@ -78,6 +83,23 @@ public class NotificationService {
         SettingsModel settingsModel = settingsRepository.findFirstByName("alert");
         settingsModel.setType(alertDTO.getType());
         settingsModel.setValue(alertDTO.getValue());
+        if(alertDTO.getValue()) {
+            NotificationDTO dto = NotificationDTO.builder()
+                    .to(1)
+                    .header("Тревога!")
+                    .body("Внимание включена тревога!")
+                    .isAlert(true)
+                    .build();
+            newNotification(dto);
+        } else {
+            NotificationDTO dto = NotificationDTO.builder()
+                    .to(1)
+                    .header("Все хорошо!")
+                    .body("Режим тревоги выключен.")
+                    .isAlert(true)
+                    .build();
+            newNotification(dto);
+        }
         return Optional.of(settingsRepository.save(settingsModel));
     }
 
@@ -87,7 +109,7 @@ public class NotificationService {
         List<Message> messages = new ArrayList<>();
         notifList.forEach(item -> {
             List<FirebaseModel> tokenList = new ArrayList<>();
-            if(item.getIsAlert()){
+            if(item.getIsAlert() != null && item.getIsAlert()){
                 tokenList = firebaseRepository.findAll();
             } else {
                 tokenList = firebaseRepository.findAllByUser_Id(item.getUser().getId());

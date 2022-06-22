@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 @Data
 public class ReportDTO {
     Integer dinoId;
-    Integer userId;
     String age;
     Boolean isHealthy;
     Integer height;

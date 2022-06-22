@@ -10,6 +10,8 @@ import ru.itmo.park.model.entity.NotificationModel;
 import ru.itmo.park.model.entity.SettingsModel;
 import ru.itmo.park.service.NotificationService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/notification")
@@ -27,6 +29,12 @@ public class NotificationResource {
                 .orElse(ResponseEntity.badRequest().build());
     }
     //get notifications (loader notification firebase)
+    @GetMapping
+    public ResponseEntity<List<NotificationModel>> getAllNotif(@RequestHeader("Authorization") String token){
+        return notificationService.getAllNotif(token)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
 
     //set firebase token
     @PostMapping("/token")

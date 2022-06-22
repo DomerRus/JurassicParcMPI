@@ -96,4 +96,22 @@ public class TaskService {
         userService.updateUser(userFrom);
         return Optional.of(taskRepository.save(model));
     }
+
+    public Optional<TaskModel> cancelTaskById(Integer taskId){
+        TaskModel model = taskRepository.getReferenceById(taskId);
+        model.setStatus(taskStatusRepository.getReferenceById(4));
+        UserModel userTo = userService.findById(model.getTo().getId()).orElse(new UserModel());
+        userTo.setIsBusy(false);
+        UserModel userFrom = userService.findById(model.getFrom().getId()).orElse(new UserModel());
+        userFrom.setIsBusy(false);
+        userService.updateUser(userTo);
+        userService.updateUser(userFrom);
+        NotificationDTO notif = NotificationDTO.builder()
+                .to(userFrom.getId())
+                .header("Задача отклонена!")
+                .body(String.format("Пользователь %s отказался от выполнения задачи.", userTo.getFirstName()))
+                .build();
+        notificationService.newNotification(notif);
+        return Optional.of(taskRepository.save(model));
+    }
 }

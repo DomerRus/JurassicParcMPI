@@ -9,4 +9,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserModel, Integer> {
     UserModel findByEmail(String email);
     List<UserModel> findAllByRoleAndIsBusy(RoleModel roleModel, Boolean isBusy);
+    List<UserModel> findAllByRole_Name(String roleModel);
 }

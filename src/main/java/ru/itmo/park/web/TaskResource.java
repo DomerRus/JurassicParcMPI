@@ -70,4 +70,11 @@ public class TaskResource {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<TaskModel> cancelTask(@RequestParam("taskId") Integer taskId){
+        return taskService.cancelTaskById(taskId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
 }

@@ -20,6 +20,7 @@ public class DinoResource {
     private final DinoService dinoService;
 
     //get dinos
+    @GetMapping
     public ResponseEntity<List<DinoModel>> getDinos(){
         return dinoService.getAllDino()
                 .map(ResponseEntity::ok)
@@ -27,13 +28,16 @@ public class DinoResource {
     }
 
     //dino report (add notification)
-    public ResponseEntity<ReportModel> sendReport(@RequestBody ReportDTO reportDTO){
-        return dinoService.sendReport(reportDTO)
+    @PostMapping("/report")
+    public ResponseEntity<ReportModel> sendReport(@RequestHeader("Authorization") String token,
+                                                  @RequestBody ReportDTO reportDTO){
+        return dinoService.sendReport(token, reportDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
     //dino isHealthy = false by id (add notification)
+    @PostMapping("/healthy")
     public ResponseEntity<DinoModel> setHealthy(@RequestParam("healthy") Boolean healthy,
                                                 @RequestParam("dinoId")Integer dinoId){
         return dinoService.setHealthy(healthy,dinoId)
