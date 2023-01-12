@@ -23,13 +23,11 @@ public class JwtProvider {
 
     public String generateToken(UserModel user) {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        JSONObject json = new JSONObject();
         Map<String, Object> map = new HashMap<>();
         map.put("userId", user.getId());
         map.put("email", user.getEmail());
         map.put("role", user.getRole().getName());
         return Jwts.builder()
-//                .setSubject(json.toString())
                 .addClaims(map)
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

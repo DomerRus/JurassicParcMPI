@@ -21,15 +21,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-
-
-    <!--<root level="${logging.level.root}">-->
-        <!--<appender-ref ref="ASYNC"/>-->
-    <!--</root>-->
-
-    <!--<root level="INFO">-->
-        <!--<appender-ref ref="ASYNC"/>-->
-    <!--</root>-->
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
     <logger name="javax.management.remote" level="WARN"/>

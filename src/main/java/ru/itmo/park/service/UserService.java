@@ -3,12 +3,15 @@ package ru.itmo.park.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.itmo.park.exception.UserDuplicateException;
+import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.entity.LocationModel;
 import ru.itmo.park.model.entity.RoleModel;
 import ru.itmo.park.model.dto.TokenDTO;
 import ru.itmo.park.model.dto.UserLoginDTO;
 import ru.itmo.park.model.entity.UserModel;
+import ru.itmo.park.repository.LocationRepository;
 import ru.itmo.park.repository.RoleRepository;
 import ru.itmo.park.repository.UserRepository;
 import ru.itmo.park.security.jwt.JwtProvider;
@@ -26,10 +29,14 @@ public class UserService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private JwtProvider jwtProvider;
+    private LocationRepository locationRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JwtProvider jwtProvider;
+
+    public Optional<List<UserModel>> findAllUsers(){
+        return Optional.of(userEntityRepository.findAllByIdIsNotNullOrderById());
+    }
 
     public Optional<TokenDTO> authenticate(UserLoginDTO authData){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -40,6 +47,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     public Optional<UserModel> findById(Integer id) {
         return userEntityRepository.findById(id);
     }
@@ -48,8 +56,26 @@ public class UserService {
         return userEntityRepository.findByEmail(email);
     }
 
-    public Optional<UserModel> addNewUser(UserModel model){
-        return Optional.of(userEntityRepository.save(model));
+    public Optional<UserModel> addNewUser(UserDTO model) throws UserDuplicateException {
+        UserModel userModel = userEntityRepository.findByEmail(model.getEmail());
+        if(userModel != null){
+            throw new UserDuplicateException("Пользователь уже существует");
+        }
+        RoleModel role = roleRepository.findByName(model.getRole());
+        LocationModel location = locationRepository.findById(1).get();
+        return Optional.of(userEntityRepository.save(new UserModel(model, role, location)));
+    }
+
+    public Optional<UserModel> updateUser(UserDTO model){
+        UserModel user = userEntityRepository.getById(model.getId());
+        RoleModel role;
+        if(model.getRole() != null){
+            role = roleRepository.findByName(model.getRole());
+        } else {
+            role = user.getRole();
+        }
+        UserModel userModel = userEntityRepository.save(new UserModel(model, user, role));
+        return Optional.of(userModel);
     }
 
     public HttpStatus deleteUser(Integer userId){
@@ -71,7 +97,8 @@ public class UserService {
 
     }
 
-    public Optional<UserModel> updateUser(UserModel model){
-        return Optional.of(userEntityRepository.save(model));
+    public void updateUser(UserModel model){
+        userEntityRepository.save(model);
     }
+
 }

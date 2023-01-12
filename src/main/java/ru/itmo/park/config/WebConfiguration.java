@@ -12,8 +12,5 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addMapping("**")
                 .allowedOrigins("*")
                 .allowedMethods("*");
-//                .allowedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition");
-//                .exposedHeaders("Authorization, Content-Type, X-Total-Count, Content-Disposition");
-//        registry.addMapping("api/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("Authorization,");
     }
 }

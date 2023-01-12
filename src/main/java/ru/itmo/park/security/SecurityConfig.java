@@ -3,7 +3,9 @@ package ru.itmo.park.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,20 +24,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//            .cors().disable()
+            .cors().disable()
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            //.antMatchers("/admin/*").hasRole("ADMIN")
-            //.antMatchers("/user/*").hasRole("USER")
-            //.antMatchers("/user/*").hasRole("ADMIN")
-//            .antMatchers("/api/**").fullyAuthenticated()
+//            .antMatchers("/admin/*").hasRole("Manager")
+//            .antMatchers("/api/**").authenticated()
+//            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring()
+//                .antMatchers(HttpMethod.OPTIONS, "/**");
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

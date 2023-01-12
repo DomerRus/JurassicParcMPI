@@ -119,18 +119,17 @@ public class NotificationService {
                     .setTitle(item.getHeader())
                     .setImage("https://www.pikpng.com/pngl/b/144-1448855_alert-png-alert-red-icon-png-clipart.png")
                     .build();
-            tokenList.forEach(token -> {
+            tokenList.forEach(token ->
                 messages.add(Message.builder()
                         .setToken(token.getToken())
                         .setNotification(notification)
-                        .build());
-            });
+                        .build())
+            );
             item.setIsSend(Boolean.TRUE);
             notificationRepository.save(item);
         });
-        //log.info("Send notification...");
         try{
-            if (messages.size()==0) return;
+            if (messages.isEmpty()) return;
             FirebaseMessaging.getInstance()
                     .sendAllAsync(messages);
         }catch (Exception ex) {
