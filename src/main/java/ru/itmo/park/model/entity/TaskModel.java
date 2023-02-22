@@ -19,23 +19,26 @@ import java.util.Date;
 public class TaskModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    private Integer id;
+    private Long groupId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_id", nullable = false)
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    UserModel from;
+    private UserModel from;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_id", nullable = false)
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    UserModel to;
+    private UserModel to;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", nullable = false)
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    TaskTypeModel type;
+    private TaskTypeModel type;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    TaskStatusModel status;
-    String comment;
-    LocalDateTime creationDate;
+    private TaskStatusModel status;
+    private String comment;
+    private LocalDateTime creationDate;
+    private Boolean isActive;
+
 }

@@ -2,16 +2,17 @@ package ru.itmo.park.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.itmo.park.exception.DinoNotFoundException;
+import ru.itmo.park.exception.UserDuplicateException;
+import ru.itmo.park.exception.UserNotFoundException;
+import ru.itmo.park.model.dto.DinoDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
 import ru.itmo.park.model.dto.ReportDTO;
-import ru.itmo.park.model.entity.DinoModel;
-import ru.itmo.park.model.entity.ReportModel;
-import ru.itmo.park.model.entity.UserModel;
-import ru.itmo.park.repository.DinoRepository;
-import ru.itmo.park.repository.DinoTypeRepository;
-import ru.itmo.park.repository.ReportRepository;
-import ru.itmo.park.repository.UserRepository;
+import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.entity.*;
+import ru.itmo.park.repository.*;
 import ru.itmo.park.security.jwt.JwtProvider;
 import ru.itmo.park.web.DinoResource;
 
@@ -29,6 +30,8 @@ public class DinoService {
 
     private final DinoTypeRepository dinoTypeRepository;
 
+    private final LocationRepository locationRepository;
+
     private final UserRepository userRepository;
 
     private final ReportRepository reportRepository;
@@ -38,16 +41,19 @@ public class DinoService {
     private final JwtProvider jwtProvider;
 
     public Optional<List<DinoModel>> getAllDino(){
-        return Optional.of(dinoRepository.findAll());
+        return dinoRepository.findAllByIsActive(Boolean.TRUE);
     }
 
-    public Optional<ReportModel> sendReport(String token, ReportDTO reportDTO){
+    public Optional<List<DinoTypeModel>> getAllType(){return Optional.of(dinoTypeRepository.findAll());}
+
+    public Optional<ReportModel> sendReport(String token, ReportDTO reportDTO) throws UserNotFoundException {
         UserModel user = userService.findById(jwtProvider.getCurrentUser(token)).orElse(new UserModel());
         DinoModel dino = dinoRepository.getReferenceById(reportDTO.getDinoId());
         dino.setIsHealthy(reportDTO.getIsHealthy());
         dino.setAge(reportDTO.getAge());
         dino.setHeight(reportDTO.getHeight());
         dino.setWeight(reportDTO.getWeight());
+        dino.setTraining(reportDTO.getTraining());
         ReportModel report = ReportModel.builder()
                 .age(reportDTO.getAge())
                 .dino(dino)
@@ -64,7 +70,11 @@ public class DinoService {
                     .header("Новый отчет!")
                     .body(String.format("Сформирован новый отчет по динозавру с id %s", report.getDino().getId()))
                     .build();
-            notificationService.newNotification(notif);
+            try {
+                notificationService.newNotification(notif);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
         return Optional.of(reportRepository.save(report));
     }
@@ -79,7 +89,11 @@ public class DinoService {
                     .header("Заболевание!")
                     .body(String.format("Заболел динозавр с id %s", model.getId()))
                     .build();
-            notificationService.newNotification(notif);
+            try {
+                notificationService.newNotification(notif);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
         List<UserModel> users2 = userRepository.findAllByRole_Name("Navigator");
         users2.forEach(o->{
@@ -88,8 +102,52 @@ public class DinoService {
                     .header("Новая задача!")
                     .body(String.format("Нужна транспортировка динозавра с id %s", model.getId()))
                     .build();
-            notificationService.newNotification(notif);
+            try {
+                notificationService.newNotification(notif);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
         return Optional.of(dinoRepository.save(model));
+    }
+
+    public Optional<DinoModel> addNewDino(DinoDTO model) {
+        DinoTypeModel type = dinoTypeRepository.findFirstByType(model.getType());
+        LocationModel location = locationRepository.findById(1).get();
+        return Optional.of(dinoRepository.save(new DinoModel(model, type, location)));
+    }
+
+    public Optional<DinoModel> updateDino(DinoDTO model) throws DinoNotFoundException {
+        Optional<DinoModel> dinoModel = dinoRepository.findById(model.getId());
+        LocationModel location;
+        if(model.getLocationId() != null) {
+            location = locationRepository.findById(model.getLocationId()).get();
+        } else {
+            location = dinoModel.get().getLocation();
+        }
+        if(!dinoModel.isPresent()) throw new DinoNotFoundException(model.getId());
+        DinoTypeModel type;
+        if(model.getType() != null){
+            type = dinoTypeRepository.findFirstByType(model.getType());
+        } else {
+            type = dinoModel.get().getType();
+        }
+        dinoRepository.save(new DinoModel(model, dinoModel.get(), location, type));
+        dinoRepository.flush();
+        return dinoModel;
+    }
+
+    public HttpStatus deleteDino(Integer dinoId) throws DinoNotFoundException {
+        Optional<DinoModel> dinoModel = dinoRepository.findById(dinoId);
+        if(dinoModel.isPresent()){
+            dinoModel.get().setIsActive(Boolean.FALSE);
+            dinoRepository.save(dinoModel.get());
+            return HttpStatus.OK;
+        }
+        throw new DinoNotFoundException(dinoId);
+    }
+
+    public Optional<DinoModel> getDinoById(Integer dinoId){
+        return dinoRepository.findById(dinoId);
     }
 }

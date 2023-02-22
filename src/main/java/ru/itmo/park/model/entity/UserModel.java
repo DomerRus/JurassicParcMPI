@@ -37,6 +37,7 @@ public class UserModel {
     @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer"})
     LocationModel location;
     Boolean isBusy;
+    Boolean isActive;
 
     public UserModel(UserDTO userDTO, RoleModel role, LocationModel location){
         this.age = userDTO.getAge();
@@ -48,6 +49,7 @@ public class UserModel {
         this.role = role;
         this.location = location;
         this.isBusy = false;
+        this.isActive = Boolean.TRUE;
     }
 
     public UserModel(UserDTO userDTO, UserModel userModel, RoleModel role){
@@ -61,5 +63,6 @@ public class UserModel {
         this.role = role;
         this.location = userModel.getLocation();
         this.isBusy = userModel.getIsBusy();
+        this.isActive = userModel.isActive;
     }
 }

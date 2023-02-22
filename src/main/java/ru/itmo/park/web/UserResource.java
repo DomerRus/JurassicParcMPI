@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.park.exception.UserDuplicateException;
+import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.UserDTO;
 import ru.itmo.park.model.entity.UserModel;
 import ru.itmo.park.service.UserService;
@@ -28,6 +29,7 @@ public class UserResource {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
+
     @PostMapping
     public ResponseEntity<UserModel> addNewUserModel(@RequestBody UserDTO model) throws UserDuplicateException {
         return userService.addNewUser(model)
@@ -42,14 +44,14 @@ public class UserResource {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserModel> getUserById(@PathVariable Integer userId){
+    public ResponseEntity<UserModel> getUserById(@PathVariable Integer userId) throws UserNotFoundException {
         return userService.findById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
 
     @PatchMapping
-    public ResponseEntity<UserModel> updateUser(@RequestBody UserDTO model){
+    public ResponseEntity<UserModel> updateUser(@RequestBody UserDTO model) throws UserNotFoundException {
         return userService.updateUser(model)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
@@ -57,7 +59,7 @@ public class UserResource {
 
     //get user by token
     @GetMapping("/me")
-    public ResponseEntity<UserModel> getUserById(@RequestHeader("Authorization") String token){
+    public ResponseEntity<UserModel> getUserById(@RequestHeader("Authorization") String token) throws UserNotFoundException {
         return userService.getUserByToken(token)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
@@ -72,7 +74,7 @@ public class UserResource {
                 .orElse(ResponseEntity.noContent().build());
     }
 
-//    @ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<String> handleJsonMappingException(Exception ex) {
         JSONObject errorResponse = new JSONObject();
         String[] name = ex.getClass().getName().split("\\.");

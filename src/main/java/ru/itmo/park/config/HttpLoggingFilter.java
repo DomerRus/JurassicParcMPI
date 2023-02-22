@@ -19,7 +19,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-//@Component
+@Component
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);

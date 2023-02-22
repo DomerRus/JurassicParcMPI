@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.AlertDTO;
 import ru.itmo.park.model.dto.FirebaseDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
@@ -49,7 +50,7 @@ public class NotificationService {
         return Optional.ofNullable(notificationRepository.findAllByUser_Id(jwtProvider.getCurrentUser(token)));
     }
 
-    public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO){
+    public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO) throws UserNotFoundException {
         Integer userId = jwtProvider.getCurrentUser(token);
         UserModel userModel = userService.findById(userId).orElse(new UserModel());
         FirebaseModel firebase = firebaseRepository.findFirstByToken(firebaseDTO.getToken());
@@ -63,7 +64,7 @@ public class NotificationService {
         return Optional.of(firebaseRepository.save(firebaseModel));
     }
 
-    public Optional<NotificationModel> newNotification(NotificationDTO notificationDTO){
+    public Optional<NotificationModel> newNotification(NotificationDTO notificationDTO) throws UserNotFoundException {
         UserModel userModel = userService.findById(notificationDTO.getTo()).orElse(new UserModel());
         NotificationModel notif = NotificationModel.builder()
                 .header(notificationDTO.getHeader())
@@ -90,7 +91,11 @@ public class NotificationService {
                     .body("Внимание включена тревога!")
                     .isAlert(true)
                     .build();
-            newNotification(dto);
+            try {
+                newNotification(dto);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             NotificationDTO dto = NotificationDTO.builder()
                     .to(1)
@@ -98,7 +103,11 @@ public class NotificationService {
                     .body("Режим тревоги выключен.")
                     .isAlert(true)
                     .build();
-            newNotification(dto);
+            try {
+                newNotification(dto);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
         return Optional.of(settingsRepository.save(settingsModel));
     }
