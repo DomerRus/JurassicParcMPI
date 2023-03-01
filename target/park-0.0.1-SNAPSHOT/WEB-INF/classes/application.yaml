@@ -17,7 +17,7 @@ spring:
   datasource:
     username: ${DB_USER:s335248}
     password: ${DB_PASS:TIyPUFpUg3xmu4Eq}
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/stud/s335248
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/studs/s335248
     driver-class-name: org.postgresql.Driver
 
 jwt:
