@@ -11,13 +11,17 @@ import ru.itmo.park.model.dto.DinoDTO;
 import ru.itmo.park.model.dto.NotificationDTO;
 import ru.itmo.park.model.dto.ReportDTO;
 import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.dto.response.DinoResponseDTO;
 import ru.itmo.park.model.entity.*;
 import ru.itmo.park.repository.*;
 import ru.itmo.park.security.jwt.JwtProvider;
 import ru.itmo.park.web.DinoResource;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +45,17 @@ public class DinoService {
     private final JwtProvider jwtProvider;
 
     public Optional<List<DinoModel>> getAllDino(){
-        return dinoRepository.findAllByIsActive(Boolean.TRUE);
+        return dinoRepository.findAllByIsActiveOrderById(Boolean.TRUE);
+    }
+
+    public Optional<List<DinoResponseDTO>> getAllDinoRecommend(){
+        return Optional.of(
+                dinoRepository.findAllByIsActiveOrderById(Boolean.TRUE).orElse(List.of())
+                        .stream()
+                        .map(o -> new DinoResponseDTO(o).setRecommend(o.getTraining()>=70 ? Boolean.TRUE : Boolean.FALSE))
+                        .sorted((o1, o2)->o2.getIsRecommend().
+                                compareTo(o1.getIsRecommend()))
+                        .collect(Collectors.toList()));
     }
 
     public Optional<List<DinoTypeModel>> getAllType(){return Optional.of(dinoTypeRepository.findAll());}

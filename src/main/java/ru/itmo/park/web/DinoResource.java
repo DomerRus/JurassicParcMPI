@@ -12,6 +12,7 @@ import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.DinoDTO;
 import ru.itmo.park.model.dto.ReportDTO;
 import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.dto.response.DinoResponseDTO;
 import ru.itmo.park.model.entity.DinoModel;
 import ru.itmo.park.model.entity.DinoTypeModel;
 import ru.itmo.park.model.entity.ReportModel;
@@ -33,6 +34,13 @@ public class DinoResource {
     @GetMapping
     public ResponseEntity<List<DinoModel>> getDinos(){
         return dinoService.getAllDino()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<DinoResponseDTO>> getDinosRecommend(){
+        return dinoService.getAllDinoRecommend()
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
