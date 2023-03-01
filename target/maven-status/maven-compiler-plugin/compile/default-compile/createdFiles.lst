@@ -80,6 +80,7 @@ ru\itmo\park\repository\ReportRepository.class
 ru\itmo\park\model\dto\ScheduleTaskDTO.class
 ru\itmo\park\model\dto\NotificationDTO$NotificationDTOBuilder.class
 ru\itmo\park\model\dto\ScheduleDTO$ScheduleDTOBuilder.class
+ru\itmo\park\config\WebConfiguration$1.class
 ru\itmo\park\model\dto\UserDTO.class
 ru\itmo\park\security\CustomUserDetails.class
 ru\itmo\park\repository\DinoTypeRepository.class
