@@ -12,8 +12,8 @@ public class ParkApplication {
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(ParkApplication.class, args);
-        System.in.close();
-        System.out.close();
+//        System.in.close();
+//        System.out.close();
     }
 
 }
