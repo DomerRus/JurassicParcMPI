@@ -15,9 +15,9 @@ spring:
       ddl-auto: update
 
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASS:896699}
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
+    username: ${DB_USER:s335248}
+    password: ${DB_PASS:TIyPUFpUg3xmu4Eq}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/stud/s335248
     driver-class-name: org.postgresql.Driver
 
 jwt:
