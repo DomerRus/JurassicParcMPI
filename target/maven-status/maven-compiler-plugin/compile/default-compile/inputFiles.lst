@@ -5,6 +5,7 @@ C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\RoleModel.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\config\HttpLoggingFilter.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\ScheduleResource.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\DinoTypeResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\repository\DinoTypeRepository.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\TaskModel.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\repository\TaskRepository.java
@@ -13,6 +14,7 @@ C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\DinoModel.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\security\jwt\JwtProvider.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\RoleResponseDTO.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\DinoResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\SettingsModel.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\TaskStatusModel.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\NotificationResource.java
