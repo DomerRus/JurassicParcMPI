@@ -10,7 +10,6 @@ import ru.itmo.park.service.NotificationService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/alarm")
-@CrossOrigin(origins = "*")
 public class AlertResource {
 
     private final NotificationService notificationService;

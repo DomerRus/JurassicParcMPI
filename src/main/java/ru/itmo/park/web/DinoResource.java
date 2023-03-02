@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/api/dino")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class DinoResource {
     //---Medic report
 

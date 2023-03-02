@@ -12,7 +12,6 @@ import ru.itmo.park.service.UserService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthResource {
 
 

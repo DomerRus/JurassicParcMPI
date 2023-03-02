@@ -13,7 +13,6 @@ spring:
         show_sql=false:
     hibernate:
       ddl-auto: update
-
   datasource:
     username: ${DB_USER:s335248}
     password: ${DB_PASS:TIyPUFpUg3xmu4Eq}
@@ -24,4 +23,4 @@ jwt:
   secret: zerotwobestwaifu
 
 server:
-  port: ${:8081}
+  port: ${PORT:8081}
