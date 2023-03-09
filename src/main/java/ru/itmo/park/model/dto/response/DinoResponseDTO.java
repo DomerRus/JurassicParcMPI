@@ -18,6 +18,7 @@ public class DinoResponseDTO {
     Boolean isHealthy;
     Integer height;
     Integer training;
+    Integer calm;
     Integer weight;
     LocationResponseDTO location;
     Boolean isActive;
@@ -37,6 +38,7 @@ public class DinoResponseDTO {
         this.isHealthy = model.getIsHealthy();
         this.height = model.getHeight();
         this.training = model.getTraining();
+        this.calm = model.getCalm();
         this.weight = model.getWeight();
         this.location = new LocationResponseDTO(model.getLocation());
         this.isActive = model.getIsActive();

@@ -29,12 +29,12 @@ public class UserModel {
     String password;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
-    @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer"})
+    @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer", "hibernateLazyInitializer"})
     RoleModel role;
     Integer age;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id", nullable = false)
-    @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer"})
+    @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer", "hibernateLazyInitializer"})
     LocationModel location;
     Boolean isBusy;
     Boolean isActive;

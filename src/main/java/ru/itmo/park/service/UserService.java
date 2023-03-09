@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.park.exception.UserDuplicateException;
 import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.dto.response.UserResponseDTO;
 import ru.itmo.park.model.entity.LocationModel;
 import ru.itmo.park.model.entity.RoleModel;
 import ru.itmo.park.model.dto.TokenDTO;
@@ -57,11 +58,11 @@ public class UserService {
     }
 
     public UserModel findByEmail(String email) {
-        return userEntityRepository.findByEmail(email);
+        return userEntityRepository.findByEmailAndIsActive(email, true);
     }
 
     public Optional<UserModel> addNewUser(UserDTO model) throws UserDuplicateException {
-        UserModel userModel = userEntityRepository.findByEmail(model.getEmail());
+        UserModel userModel = userEntityRepository.findByEmailAndIsActive(model.getEmail(), true);
         if(userModel != null){
             throw new UserDuplicateException(model.getEmail());
         }
@@ -70,7 +71,7 @@ public class UserService {
         return Optional.of(userEntityRepository.save(new UserModel(model, role, location)));
     }
 
-    public Optional<UserModel> updateUser(UserDTO model) throws UserNotFoundException {
+    public Optional<UserResponseDTO> updateUser(UserDTO model) throws UserNotFoundException {
         Optional<UserModel> user = userEntityRepository.findById(model.getId());
         if(!user.isPresent()) throw new UserNotFoundException(model.getId());
         RoleModel role;
@@ -81,7 +82,8 @@ public class UserService {
         }
         userEntityRepository.save(new UserModel(model, user.get(), role));
         userEntityRepository.flush();
-        return user;
+        user = userEntityRepository.findById(model.getId());
+        return Optional.of(new UserResponseDTO(user.get()));
     }
 
     public HttpStatus deleteUser(Integer userId){

@@ -11,6 +11,7 @@ import ru.itmo.park.exception.UserDuplicateException;
 import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.DinoDTO;
 import ru.itmo.park.model.dto.ReportDTO;
+import ru.itmo.park.model.dto.ReportTrainDTO;
 import ru.itmo.park.model.dto.UserDTO;
 import ru.itmo.park.model.dto.response.DinoResponseDTO;
 import ru.itmo.park.model.entity.DinoModel;
@@ -52,10 +53,16 @@ public class DinoResource {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
+    @PostMapping("/report/train")
+    public ResponseEntity<ReportTrainDTO> sendReportTrain(@RequestBody ReportTrainDTO reportDTO) {
+        return dinoService.sendReportTrain(reportDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
+    }
 
     //dino isHealthy = false by id (add notification)
     @PostMapping("/healthy")
-    public ResponseEntity<DinoModel> setHealthy(@RequestParam("healthy") Boolean healthy,
+    public ResponseEntity<DinoResponseDTO> setHealthy(@RequestParam("healthy") Boolean healthy,
                                                 @RequestParam("dinoId")Integer dinoId){
         return dinoService.setHealthy(healthy,dinoId)
                 .map(ResponseEntity::ok)
@@ -63,7 +70,7 @@ public class DinoResource {
     }
 
     @PostMapping
-    public ResponseEntity<DinoModel> addNewDinoModel(@RequestBody DinoDTO model) {
+    public ResponseEntity<DinoResponseDTO> addNewDinoModel(@RequestBody DinoDTO model) {
         return dinoService.addNewDino(model)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
@@ -77,20 +84,20 @@ public class DinoResource {
     }
 
     //delete user manager
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteDino(@PathVariable Integer userId) throws DinoNotFoundException {
-        return ResponseEntity.status(dinoService.deleteDino(userId)).build();
+    @DeleteMapping("/{dinoId}")
+    public ResponseEntity<Void> deleteDino(@PathVariable Integer dinoId) throws DinoNotFoundException {
+        return ResponseEntity.status(dinoService.deleteDino(dinoId)).build();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<DinoModel> getDinoById(@PathVariable Integer userId) {
-        return dinoService.getDinoById(userId)
+    @GetMapping("/{dinoId}")
+    public ResponseEntity<DinoResponseDTO> getDinoById(@PathVariable Integer dinoId) {
+        return dinoService.getDinoById(dinoId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
 
     @PatchMapping
-    public ResponseEntity<DinoModel> updateDino(@RequestBody DinoDTO model) throws DinoNotFoundException {
+    public ResponseEntity<DinoResponseDTO> updateDino(@RequestBody DinoDTO model) throws DinoNotFoundException {
         return dinoService.updateDino(model)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());

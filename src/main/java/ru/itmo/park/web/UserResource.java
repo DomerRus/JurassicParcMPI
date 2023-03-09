@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.itmo.park.exception.UserDuplicateException;
 import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.dto.response.UserResponseDTO;
 import ru.itmo.park.model.entity.UserModel;
 import ru.itmo.park.service.UserService;
 
@@ -50,7 +51,7 @@ public class UserResource {
     }
 
     @PatchMapping
-    public ResponseEntity<UserModel> updateUser(@RequestBody UserDTO model) throws UserNotFoundException {
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserDTO model) throws UserNotFoundException {
         return userService.updateUser(model)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());

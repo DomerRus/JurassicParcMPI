@@ -8,6 +8,9 @@ import ru.itmo.park.model.entity.UserModel;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAmount;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +27,7 @@ public class ScheduleResponseDTO {
 
     public ScheduleResponseDTO(ScheduleModel model){
         this.id = model.getId();
-        this.dateTime = model.getDateTime();
+        this.dateTime = model.getDateTime().plusSeconds(10800);
         this.user = new UserResponseDTO(model.getUser());
         this.task = model.getTask();
         this.location = new LocationResponseDTO(model.getLocation());

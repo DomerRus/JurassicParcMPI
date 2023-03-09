@@ -47,13 +47,13 @@ public class NotificationService {
 
 
     public Optional<List<NotificationModel>> getAllNotif(String token){
-        return Optional.ofNullable(notificationRepository.findAllByUser_Id(jwtProvider.getCurrentUser(token)));
+        return Optional.ofNullable(notificationRepository.findAllByUser_IdOrderByIdDesc(jwtProvider.getCurrentUser(token)));
     }
 
     public Optional<FirebaseModel> saveFirebaseToken(String token, FirebaseDTO firebaseDTO) throws UserNotFoundException {
         Integer userId = jwtProvider.getCurrentUser(token);
         UserModel userModel = userService.findById(userId).orElse(new UserModel());
-        FirebaseModel firebase = firebaseRepository.findFirstByToken(firebaseDTO.getToken());
+        FirebaseModel firebase = firebaseRepository.findFirstByTokenAndUser_Id(firebaseDTO.getToken(), userId);
         if(firebase != null){
             return Optional.of(firebase);
         }

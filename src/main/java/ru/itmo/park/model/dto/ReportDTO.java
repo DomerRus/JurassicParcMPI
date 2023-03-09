@@ -16,4 +16,5 @@ public class ReportDTO {
     Integer height;
     Integer weight;
     Integer training;
+    Integer calm;
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface NotificationRepository  extends JpaRepository<NotificationModel, Integer> {
     List<NotificationModel> findAllByIsSendIsFalse();
 
-    List<NotificationModel> findAllByUser_Id(Integer id);
+    List<NotificationModel> findAllByUser_IdOrderByIdDesc(Integer id);
 }

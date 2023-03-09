@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.park.exception.DinoNotFoundException;
 import ru.itmo.park.exception.UserDuplicateException;
 import ru.itmo.park.exception.UserNotFoundException;
-import ru.itmo.park.model.dto.DinoDTO;
-import ru.itmo.park.model.dto.NotificationDTO;
-import ru.itmo.park.model.dto.ReportDTO;
-import ru.itmo.park.model.dto.UserDTO;
+import ru.itmo.park.model.dto.*;
 import ru.itmo.park.model.dto.response.DinoResponseDTO;
 import ru.itmo.park.model.entity.*;
 import ru.itmo.park.repository.*;
@@ -63,11 +60,8 @@ public class DinoService {
     public Optional<ReportModel> sendReport(String token, ReportDTO reportDTO) throws UserNotFoundException {
         UserModel user = userService.findById(jwtProvider.getCurrentUser(token)).orElse(new UserModel());
         DinoModel dino = dinoRepository.getReferenceById(reportDTO.getDinoId());
-        dino.setIsHealthy(reportDTO.getIsHealthy());
-        dino.setAge(reportDTO.getAge());
-        dino.setHeight(reportDTO.getHeight());
-        dino.setWeight(reportDTO.getWeight());
-        dino.setTraining(reportDTO.getTraining());
+        dino = new DinoModel(reportDTO, dino);
+        dinoRepository.save(dino);
         ReportModel report = ReportModel.builder()
                 .age(reportDTO.getAge())
                 .dino(dino)
@@ -93,15 +87,33 @@ public class DinoService {
         return Optional.of(reportRepository.save(report));
     }
 
-    public Optional<DinoModel> setHealthy(Boolean healthy, Integer dinoId){
-        DinoModel model = dinoRepository.getReferenceById(dinoId);
-        model.setIsHealthy(healthy);
+    public Optional<ReportTrainDTO> sendReportTrain(ReportTrainDTO reportDTO) {
+        List<UserModel> users = userRepository.findAllByRole_Name("Manager");
+        users.forEach(o->{
+            NotificationDTO notif = NotificationDTO.builder()
+                    .to(o.getId())
+                    .header("Новый отчет!")
+                    .body(String.format("Для дино с ИД %s требуется установить степень дрессированности = %s%% и степень спокойствия = %s%%.", reportDTO.getDinoId(), reportDTO.getTraining(), reportDTO.getCalm()))
+                    .build();
+            try {
+                notificationService.newNotification(notif);
+            } catch (UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return Optional.of(reportDTO);
+    }
+
+    public Optional<DinoResponseDTO> setHealthy(Boolean healthy, Integer dinoId){
+        Optional<DinoModel> model = dinoRepository.findById(dinoId);
+        if(model.isEmpty()) return Optional.empty();
+        model.get().setIsHealthy(healthy);
         List<UserModel> users = userRepository.findAllByRole_Name("Manager");
         users.forEach(o->{
             NotificationDTO notif = NotificationDTO.builder()
                     .to(o.getId())
                     .header("Заболевание!")
-                    .body(String.format("Заболел динозавр с id %s", model.getId()))
+                    .body(String.format("Заболел динозавр с id %s", model.get().getId()))
                     .build();
             try {
                 notificationService.newNotification(notif);
@@ -114,7 +126,7 @@ public class DinoService {
             NotificationDTO notif = NotificationDTO.builder()
                     .to(o.getId())
                     .header("Новая задача!")
-                    .body(String.format("Нужна транспортировка динозавра с id %s", model.getId()))
+                    .body(String.format("Нужна транспортировка динозавра с id %s", model.get().getId()))
                     .build();
             try {
                 notificationService.newNotification(notif);
@@ -122,16 +134,17 @@ public class DinoService {
                 throw new RuntimeException(e);
             }
         });
-        return Optional.of(dinoRepository.save(model));
+        dinoRepository.save(model.get());
+        return Optional.of(new DinoResponseDTO(dinoRepository.findById(model.get().getId()).get()));
     }
 
-    public Optional<DinoModel> addNewDino(DinoDTO model) {
+    public Optional<DinoResponseDTO> addNewDino(DinoDTO model) {
         DinoTypeModel type = dinoTypeRepository.findFirstByType(model.getType());
         LocationModel location = locationRepository.findById(1).get();
-        return Optional.of(dinoRepository.save(new DinoModel(model, type, location)));
+        return Optional.of(new DinoResponseDTO(dinoRepository.save(new DinoModel(model, type, location))));
     }
 
-    public Optional<DinoModel> updateDino(DinoDTO model) throws DinoNotFoundException {
+    public Optional<DinoResponseDTO> updateDino(DinoDTO model) throws DinoNotFoundException {
         Optional<DinoModel> dinoModel = dinoRepository.findById(model.getId());
         LocationModel location;
         if(model.getLocationId() != null) {
@@ -148,7 +161,7 @@ public class DinoService {
         }
         dinoRepository.save(new DinoModel(model, dinoModel.get(), location, type));
         dinoRepository.flush();
-        return dinoModel;
+        return Optional.of(new DinoResponseDTO(dinoRepository.findById(model.getId()).get()));
     }
 
     public HttpStatus deleteDino(Integer dinoId) throws DinoNotFoundException {
@@ -161,7 +174,7 @@ public class DinoService {
         throw new DinoNotFoundException(dinoId);
     }
 
-    public Optional<DinoModel> getDinoById(Integer dinoId){
-        return dinoRepository.findById(dinoId);
+    public Optional<DinoResponseDTO> getDinoById(Integer dinoId){
+        return Optional.of(new DinoResponseDTO(dinoRepository.findById(dinoId).orElse(new DinoModel())));
     }
 }

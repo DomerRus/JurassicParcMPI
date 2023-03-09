@@ -18,9 +18,9 @@ public class NotificationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+    @JsonIgnoreProperties(value = {"applications", "hibernateEagerInitializer", "hibernateLazyInitializer"})
     UserModel user;
     String header;
     String imageUrl;

@@ -20,6 +20,7 @@ C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\NotificationResource.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\TaskDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\FirebaseModel.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\TaskResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\service\TaskService.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\AuthResource.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\repository\RoleRepository.java
@@ -32,7 +33,9 @@ C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\repository\NotificationRepository.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\DinoDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\AlertResource.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\TaskTypeResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\LocationResource.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\TaskStatusResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\ListTaskDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\service\UserService.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\entity\LocationModel.java
@@ -48,6 +51,7 @@ C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\TokenDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\service\LocationService.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\UserDTO.java
+C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\ReportTrainDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\model\dto\response\UserResponseDTO.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\repository\LocationRepository.java
 C:\Users\markg\Documents\GitHub\JurassicParcMPI\src\main\java\ru\itmo\park\web\TaskResource.java

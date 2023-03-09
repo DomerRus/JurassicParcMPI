@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.itmo.park.exception.UserNotFoundException;
 import ru.itmo.park.model.dto.ListTaskDTO;
 import ru.itmo.park.model.dto.TaskDTO;
+import ru.itmo.park.model.dto.response.TaskResponseDTO;
 import ru.itmo.park.model.entity.TaskModel;
 import ru.itmo.park.model.entity.TaskStatusModel;
 import ru.itmo.park.model.entity.TaskTypeModel;
@@ -47,21 +48,21 @@ public class TaskResource {
     }
     //get tasks by token
     @GetMapping
-    public ResponseEntity<List<TaskModel>> getTasksById(@RequestHeader("Authorization") String token){
+    public ResponseEntity<List<TaskResponseDTO>> getTasksById(@RequestHeader("Authorization") String token){
         return taskService.getTaskByUserId(token)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
     //get last task
     @GetMapping("/last")
-    public ResponseEntity<TaskModel> getLastTask(@RequestHeader("Authorization") String token){
+    public ResponseEntity<TaskResponseDTO> getLastTask(@RequestHeader("Authorization") String token){
         return taskService.getLastTaskByUserId(token)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
 
     @GetMapping("/send")
-    public ResponseEntity<List<TaskModel>> getSendTask(@RequestHeader("Authorization") String token,
+    public ResponseEntity<List<TaskResponseDTO>> getSendTask(@RequestHeader("Authorization") String token,
                                                        @RequestParam(name = "groupId", required = false) Long groupId){
         return taskService.getSendTaskByUser(token, groupId)
                 .map(ResponseEntity::ok)
@@ -69,35 +70,36 @@ public class TaskResource {
     }
     //confirm task and set idBusy = true
     @PostMapping("/confirm")
-    public ResponseEntity<TaskModel> confirmTask(@RequestParam("taskId") Integer taskId){
+    public ResponseEntity<TaskResponseDTO> confirmTask(@RequestParam("taskId") Integer taskId){
         return taskService.confirmTaskById(taskId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
     //end task and set isBusy = false
     @PostMapping("/end")
-    public ResponseEntity<TaskModel> endTask(@RequestParam("taskId") Integer taskId) throws UserNotFoundException {
+    public ResponseEntity<TaskResponseDTO> endTask(@RequestParam("taskId") Integer taskId) throws UserNotFoundException {
         return taskService.endTaskById(taskId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<?> cancelTask(@RequestParam(name = "taskId", required = false) Integer taskId, @RequestParam(name = "groupId", required = false) Long groupId) throws UserNotFoundException {
+    public ResponseEntity<?> cancelTask(@RequestParam(name = "taskId", required = false) Integer taskId,
+                                        @RequestParam(name = "groupId", required = false) Long groupId) throws UserNotFoundException {
         return taskService.cancelTaskById(taskId, groupId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/resend")
-    public ResponseEntity<TaskModel> resendTask(@RequestParam("taskId") Integer taskId) throws UserNotFoundException {
+    public ResponseEntity<TaskResponseDTO> resendTask(@RequestParam("taskId") Integer taskId) throws UserNotFoundException {
         return taskService.resendTaskById(taskId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/disable")
-    public ResponseEntity<Void> resendTask(@RequestParam("groupId") Long groupId) throws UserNotFoundException {
+    public ResponseEntity<Void> resendTask(@RequestParam("groupId") Long groupId) {
         return ResponseEntity.status(taskService.disableTasksByGroupId(groupId)).build();
     }
 
