@@ -32,10 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
             .and()
             .authorizeRequests()
 //            .antMatchers("/admin/*").hasRole("Manager")
-//            .antMatchers("/api/**").authenticated()
-//            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/**").permitAll()
-            .and()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/**").authenticated()
+                .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
